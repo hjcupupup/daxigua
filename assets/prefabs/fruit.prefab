@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "fruit",
+    "_name": "0",
     "_objFlags": 0,
     "_parent": null,
     "_children": [],
@@ -24,16 +24,10 @@
       },
       {
         "__id__": 3
-      },
-      {
-        "__id__": 4
-      },
-      {
-        "__id__": 5
       }
     ],
     "_prefab": {
-      "__id__": 6
+      "__id__": 4
     },
     "_opacity": 255,
     "_color": {
@@ -45,8 +39,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 153,
-      "height": 152
+      "width": 52,
+      "height": 52
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -57,8 +51,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        0,
-        0,
+        344,
+        568,
         0,
         0,
         0,
@@ -78,8 +72,8 @@
     "_skewX": 0,
     "_skewY": 0,
     "_is3DNode": false,
-    "_groupIndex": 1,
-    "groupIndex": 1,
+    "_groupIndex": 0,
+    "groupIndex": 0,
     "_id": ""
   },
   {
@@ -98,7 +92,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "3ec8dd35-b2e3-4781-a7a6-8f847b29af36"
+      "__uuid__": "b967b9a7-f8cd-4176-babd-d16270f5cbb2"
     },
     "_type": 0,
     "_sizeMode": 1,
@@ -115,60 +109,13 @@
     "_id": ""
   },
   {
-    "__type__": "0de7d1tCFZEWoOp0kegDtm5",
+    "__type__": "f0d56afcj1N37hnbbAzocV1",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 1
     },
     "_enabled": true,
-    "_id": ""
-  },
-  {
-    "__type__": "cc.RigidBody",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 1
-    },
-    "_enabled": true,
-    "_type": 2,
-    "_allowSleep": true,
-    "_gravityScale": 3,
-    "_linearDamping": 0,
-    "_angularDamping": 0,
-    "_linearVelocity": {
-      "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
-    },
-    "_angularVelocity": 0,
-    "_fixedRotation": false,
-    "enabledContactListener": true,
-    "bullet": false,
-    "awakeOnLoad": true,
-    "_id": ""
-  },
-  {
-    "__type__": "cc.PhysicsCircleCollider",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 1
-    },
-    "_enabled": true,
-    "tag": 0,
-    "_density": 1,
-    "_sensor": false,
-    "_friction": 1,
-    "_restitution": 0.1,
-    "body": null,
-    "_offset": {
-      "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
-    },
-    "_radius": 76,
     "_id": ""
   },
   {
@@ -177,7 +124,7 @@
       "__id__": 1
     },
     "asset": {
-      "__uuid__": "e1b4a5cf-2d20-4fc7-b0d0-0e7699f42f5b"
+      "__id__": 0
     },
     "fileId": "",
     "sync": false

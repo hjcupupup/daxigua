@@ -12,6 +12,7 @@ export default class Fruit extends cc.Component {
   public init(num: number, sF: cc.SpriteFrame) {
     this.node.getComponent(cc.Sprite).spriteFrame = sF;
   }
+  fruitNum: number = 0;
   // LIFE-CYCLE CALLBACKS:
 
   // onLoad () {}

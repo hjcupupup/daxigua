@@ -15,7 +15,7 @@ export default class Fruit extends cc.Component {
   fruitNum: number = 0;
   // LIFE-CYCLE CALLBACKS:
 
-  // onLoad () {}
+  onLoad() {}
 
   start() {}
 

@@ -12,6 +12,7 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class GameManager extends cc.Component {
+  // 属性
   @property({ type: cc.Prefab })
   FruitItem: cc.Prefab = null;
   // LIFE-CYCLE CALLBACKS:
@@ -19,12 +20,24 @@ export default class GameManager extends cc.Component {
   score: cc.Label = null;
   @property({ type: cc.Node })
   topNode: cc.Node = null;
-
+  // 落下的水果
+  @property({ type: cc.Node })
+  fruitNode: cc.Node = null;
+  // 分数
+  scoreObj = {
+    isScoreChanged: false,
+    target: 0,
+    change: 0,
+    score: 0
+  };
+  // 设置一个静态单例的引用，方便其他类中调用该方法
+  static Instance: GameManager = null;
   fruitList = [];
   targetFruit = null;
   method: UiUtils = null;
   fruitNum: number = 0; //记录目前下面有几个水果，也即是能够生成的最大的水果lev
   onLoad() {
+    GameManager.Instance = this;
     this.method = new UiUtils();
     this.method.setCanvasScaleMode(this.node.getComponent(cc.Canvas));
     // 绑定点击生成水果的事件
@@ -117,36 +130,47 @@ export default class GameManager extends cc.Component {
     ! 由于load资源是微任务，所以增加fruit节点的操作需要在.then中执行
      */
   }
+  // 随机生成水果等级
   randFruitLev(max: number): number {
     return this.method.randInt(max);
   }
-  creatFruit = function (num: number, pos: cc.Vec2) {
-    //增加一个防抖
+
+  // 创建水果
+  creatFruit = function (num: number, pos: cc.Vec2, levUp: boolean = false) {
     let t = this;
-    if (t.targetFruit) {
+    if (t.targetFruit && !levUp) {
       return;
     }
-    t.method
-      .loadImg('fruit/' + t.randFruitLev(num), cc.SpriteFrame)
-      .then(res => {
-        let fruitPre = cc.instantiate(t.FruitItem);
-        fruitPre.getComponent(cc.Sprite).spriteFrame = <cc.SpriteFrame>res;
-        // 创建时不受重力影响
-        fruitPre.getComponent(cc.RigidBody).type = cc.RigidBodyType.Static;
-        fruitPre.getComponent(cc.PhysicsCircleCollider).radius = 0;
-        fruitPre.getComponent(cc.PhysicsCircleCollider).apply();
-        fruitPre.parent = t.node;
-        fruitPre.position = cc.v2(0, pos.y);
-        fruitPre.scale = 0;
-        cc.tween(fruitPre)
-          .to(0.3, { scale: 1 }, { easing: 'backOut' })
-          .call(() => {
+    let randNum = levUp ? num : t.randFruitLev(num);
+    // let randNum = 10;
+    t.method.loadImg('fruit/' + randNum, cc.SpriteFrame).then(res => {
+      let fruitPre = cc.instantiate(t.FruitItem);
+      fruitPre.name = randNum.toString();
+      fruitPre.getComponent(cc.Sprite).spriteFrame = <cc.SpriteFrame>res;
+      // 创建时不受重力影响
+      fruitPre.getComponent(cc.RigidBody).type = levUp
+        ? cc.RigidBodyType.Dynamic
+        : cc.RigidBodyType.Static;
+      fruitPre.getComponent(cc.PhysicsCircleCollider).radius = levUp
+        ? fruitPre.height / 2
+        : 0;
+      fruitPre.getComponent(cc.PhysicsCircleCollider).apply();
+      fruitPre.parent = t.node;
+      fruitPre.position = cc.v2(pos);
+      fruitPre.scale = 0;
+      cc.tween(fruitPre)
+        .to(0.3, { scale: 1 }, { easing: 'backOut' })
+        .call(() => {
+          if (levUp) {
+            t.targetFruit = t.targetFruit;
+          } else {
             t.targetFruit = fruitPre;
-          })
-          .start()
-          .tag(1);
-        t.handleFruitLev();
-      });
+          }
+        })
+        .start()
+        .tag(1);
+      t.handleFruitLev();
+    });
   };
   handleFruitLev() {
     this.fruitNum < 10 ? (this.fruitNum += 1) : (this.fruitNum = 10);

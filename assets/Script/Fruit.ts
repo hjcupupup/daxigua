@@ -30,6 +30,7 @@ export default class Fruit extends cc.Component {
     if (other.node.group == 'downwall') {
       // 碰撞后将其加入到fruitNode节点下
       self.node.parent = fruitNode;
+      cc.log(self.node.y);
     }
 
     // 是否碰撞到其他水果
@@ -47,12 +48,13 @@ export default class Fruit extends cc.Component {
       // 两个水果name相同的情况
       if (self.name == other.name && self.name.substring(0, 2) !== '10') {
         // 在被撞的水果处生成新的
-        cc.log(cc.v2(self.node.x, self.node.y));
-        this.creatLevelupFruit(
-          cc.v2(other.node.x, other.node.y),
-          // cc.v2(self.node.x, self.node.y),
-          +other.name[0]
-        );
+        this.creatLevelupFruit(cc.v2(other.node.position), +other.name[0]);
+        // 去掉边界避免再次碰撞
+
+        other.node.getComponent(cc.PhysicsCircleCollider).radius = 0;
+        other.node.getComponent(cc.PhysicsCircleCollider).apply();
+        self.node.getComponent(cc.PhysicsCircleCollider).radius = 0;
+        self.node.getComponent(cc.PhysicsCircleCollider).apply();
         // 销毁原来的两个
         self.node.active = false;
         other.node.active = false;

@@ -7,7 +7,7 @@
 import Fruit from './Fruit';
 import UiUtils from './Utils/UiUtils';
 import setCanvasScaleMode from './Utils/UiUtils';
-// import { Game, Canvas, getSetOfTouchesEndOrCancel, resources, loader, Node, randomRangeInt, handleTouchesBegin, targetedAction } from '../../creator';
+// import { Game, Canvas, getSetOfTouchesEndOrCancel, resources, loader, Node, randomRangeInt, handleTouchesBegin, targetedAction, Button, moveTo } from '../../creator';
 const { ccclass, property } = cc._decorator;
 
 @ccclass
@@ -23,6 +23,12 @@ export default class GameManager extends cc.Component {
   // 落下的水果
   @property({ type: cc.Node })
   fruitNode: cc.Node = null;
+
+  @property({ type: cc.Button })
+  StartButton: cc.Button = null;
+
+  @property({ type: cc.Node })
+  rollNumber: cc.Node = null;
   // 分数
   scoreObj = {
     isScoreChanged: false,
@@ -36,17 +42,31 @@ export default class GameManager extends cc.Component {
   targetFruit = null;
   method: UiUtils = null;
   fruitNum: number = 0; //记录目前下面有几个水果，也即是能够生成的最大的水果lev
+  // 是否在游戏
+  isStart: boolean = false;
   onLoad() {
+    let numbers = this.rollNumber
+      .getChildByName('rollNumber')
+      .getComponent(cc.Layout);
     GameManager.Instance = this;
     this.method = new UiUtils();
+    this.StartButton.node.active = !this.isStart;
     this.method.setCanvasScaleMode(this.node.getComponent(cc.Canvas));
-    // 绑定点击生成水果的事件
     this.node.on(cc.Node.EventType.TOUCH_START, this.onTouchStart, this);
     this.node.on(cc.Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
     this.node.on(cc.Node.EventType.TOUCH_END, this.onTouchEnd, this);
     this.node.on(cc.Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
     this.physicsSystemCtrl(true, false);
+    // 显示开始按钮
+    // this.startGame();
+  }
+  // 开始游戏
+  startGame() {
+    this.isStart = true;
+    this.StartButton.node.active = !this.isStart;
+    // 绑定点击生成水果的事件
     this.creatFruit(0, cc.v2(0, 500));
+    cc.log('start');
   }
   // 物理引擎控制
   physicsSystemCtrl(enablePhysics: boolean, enableDebug: boolean) {
@@ -142,7 +162,7 @@ export default class GameManager extends cc.Component {
       return;
     }
     let randNum = levUp ? num : t.randFruitLev(num);
-    // let randNum = 10;
+    // let randNum = 1;
     t.method.loadImg('fruit/' + randNum, cc.SpriteFrame).then(res => {
       let fruitPre = cc.instantiate(t.FruitItem);
       fruitPre.name = randNum.toString();
@@ -155,11 +175,11 @@ export default class GameManager extends cc.Component {
         ? fruitPre.height / 2
         : 0;
       fruitPre.getComponent(cc.PhysicsCircleCollider).apply();
-      fruitPre.parent = t.node;
+      fruitPre.parent = levUp ? t.fruitNode : t.node;
       fruitPre.position = cc.v2(pos);
       fruitPre.scale = 0;
       cc.tween(fruitPre)
-        .to(0.3, { scale: 1 }, { easing: 'backOut' })
+        .to(levUp ? 0 : 0.1, { scale: 1 }, { easing: 'backOut' })
         .call(() => {
           if (levUp) {
             t.targetFruit = t.targetFruit;
@@ -169,7 +189,7 @@ export default class GameManager extends cc.Component {
         })
         .start()
         .tag(1);
-      t.handleFruitLev();
+      !levUp && t.handleFruitLev();
     });
   };
   handleFruitLev() {
